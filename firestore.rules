@@ -1,0 +1,105 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny Catch-all global security net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common global helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+
+    // Validation helper for Dashboards
+    function isValidDashboard(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+          && data.order is number
+          && data.ownerId is string && data.ownerId == request.auth.uid;
+    }
+
+    // Validation helper for Categories
+    function isValidCategory(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+          && data.dashboardId is string && data.dashboardId.size() <= 128
+          && data.order is number
+          && data.column is number && data.column >= 0 && data.column <= 10
+          && data.ownerId is string && data.ownerId == request.auth.uid
+          && (!('sortBy' in data) || (data.sortBy is string && data.sortBy in ['custom', 'az', 'za', 'newest']));
+    }
+
+    // Validation helper for Bookmarks
+    function isValidBookmark(data) {
+      return data.url is string && data.url.size() > 0 && data.url.size() <= 2048
+          && data.title is string && data.title.size() > 0 && data.title.size() <= 500
+          && data.description is string && data.description.size() <= 2048
+          && data.categoryId is string && data.categoryId.size() <= 128
+          && data.dashboardId is string && data.dashboardId.size() <= 128
+          && data.tags is list && data.tags.size() <= 20
+          && data.order is number
+          && data.ownerId is string && data.ownerId == request.auth.uid;
+    }
+
+    match /dashboards/{dashboardId} {
+      allow get: if isSignedIn() && isOwner(resource.data.ownerId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      allow create: if isSignedIn() 
+          && request.resource.data.createdAt == request.time
+          && isValidDashboard(request.resource.data);
+
+      allow update: if isSignedIn()
+          && request.resource.data.ownerId == resource.data.ownerId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && isValidDashboard(request.resource.data)
+          && (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'order'])
+          );
+
+      allow delete: if isSignedIn() && isOwner(resource.data.ownerId);
+    }
+
+    match /categories/{categoryId} {
+      allow get: if isSignedIn() && isOwner(resource.data.ownerId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      allow create: if isSignedIn()
+          && request.resource.data.createdAt == request.time
+          && isValidCategory(request.resource.data);
+
+      allow update: if isSignedIn()
+          && request.resource.data.ownerId == resource.data.ownerId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && isValidCategory(request.resource.data)
+          && (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'order', 'column', 'dashboardId', 'sortBy'])
+          );
+
+      allow delete: if isSignedIn() && isOwner(resource.data.ownerId);
+    }
+
+    match /bookmarks/{bookmarkId} {
+      allow get: if isSignedIn() && isOwner(resource.data.ownerId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      allow create: if isSignedIn()
+          && request.resource.data.createdAt == request.time
+          && isValidBookmark(request.resource.data);
+
+      allow update: if isSignedIn()
+          && request.resource.data.ownerId == resource.data.ownerId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && isValidBookmark(request.resource.data)
+          && (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['url', 'title', 'description', 'categoryId', 'dashboardId', 'tags', 'order'])
+          );
+
+      allow delete: if isSignedIn() && isOwner(resource.data.ownerId);
+    }
+  }
+}

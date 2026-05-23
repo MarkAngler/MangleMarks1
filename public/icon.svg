@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+    <!-- Bookmark Gradient -->
+    <linearGradient id="bookmarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+
+    <!-- Accent Flare -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Background Card Container -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Inner Decorative Glow -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="rgba(255, 255, 255, 0.04)" stroke-width="4" />
+
+  <!-- The Styled Bookmark Shape -->
+  <g filter="url(#shadow)">
+    <!-- Main Bookmark -->
+    <path d="M160,110 L352,110 C368,110 380,122 380,138 L380,410 L256,330 L132,410 L132,138 C132,122 144,110 160,110 Z" fill="url(#bookmarkGrad)" />
+    
+    <!-- Decorative Highlight Flare (The Ribbon Header) -->
+    <path d="M160,110 L352,110 C368,110 380,122 380,138 L380,150 L132,150 L132,138 C132,122 144,110 160,110 Z" fill="url(#accentGrad)" />
+  </g>
+
+  <!-- Styled White/Neon M Graphic on Bookmark -->
+  <path d="M190,210 L230,210 L256,252 L282,210 L322,210 L322,310 L292,310 L292,250 L268,290 L244,290 L220,250 L220,310 L190,310 Z" fill="#ffffff" opacity="0.95" />
+</svg>

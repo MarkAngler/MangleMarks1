@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Represents a bookmark dashboard tab or sheet.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the dashboard."
+        },
+        "order": {
+          "type": "number",
+          "description": "Sorting order of the dashboard."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the user who owns this dashboard."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this dashboard was created."
+        }
+      },
+      "required": ["name", "order", "ownerId", "createdAt"]
+    },
+    "category": {
+      "title": "Category",
+      "description": "A container (or column box) for bookmarks inside a dashboard tab.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the category."
+        },
+        "dashboardId": {
+          "type": "string",
+          "description": "ID of the parent dashboard."
+        },
+        "order": {
+          "type": "number",
+          "description": "Sorting order within the dashboard or column."
+        },
+        "column": {
+          "type": "number",
+          "description": "The flex column index (e.g. 0, 1, 2) in which the category is placed."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the user who owns this category."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this category was created."
+        }
+      },
+      "required": ["name", "dashboardId", "order", "column", "ownerId", "createdAt"]
+    },
+    "bookmark": {
+      "title": "Bookmark",
+      "description": "An individual bookmark item.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The bookmarked URL."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the bookmarked page."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional notes or description."
+        },
+        "tags": {
+          "type": "array",
+          "description": "List of tags associated with this bookmark."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "ID of the containing category."
+        },
+        "dashboardId": {
+          "type": "string",
+          "description": "ID of the parent dashboard containing the category."
+        },
+        "order": {
+          "type": "number",
+          "description": "Sorting order of the bookmark within its category."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the user who owns this bookmark."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this bookmark was created."
+        }
+      },
+      "required": ["url", "title", "categoryId", "dashboardId", "order", "ownerId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "dashboards/{dashboardId}": {
+      "schema": "dashboard",
+      "description": "Dashboards which form the primary tabs."
+    },
+    "categories/{categoryId}": {
+      "schema": "category",
+      "description": "Categories grouping bookmarks in a dashboard."
+    },
+    "bookmarks/{bookmarkId}": {
+      "schema": "bookmark",
+      "description": "Bookmarks grouped inside categories."
+    }
+  }
+}

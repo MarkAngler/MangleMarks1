@@ -1,0 +1,6 @@
+{
+  "name": "MangleMarks",
+  "description": "A powerful bookmark organizer with customizable dashboards, multi-column categories, bookmarklet support, and custom data imports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
